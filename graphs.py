@@ -122,13 +122,13 @@ def recommend_all_friends(G, max_depth):
 class DiGraph:
     
     def __init__(self):
-        self._edges = []
+        self._edges = {}
         self.num_vertices = 0
         self.num_edges = 0
 
 
 
-    def edge_set():
+    def edge_set(self):
         """Loops through all of the edges, and adds the tuples
         of the vertices involved in each edge for each to a set.
         
@@ -136,26 +136,45 @@ class DiGraph:
         Set of tuples of vertices.
         
         """
-        pass
+        set_of_edges = set()
 
-    def add_vertex(data_ID):
-        pass
-
-    def add_edge(v1, v2):
-        pass
-
-    def vertex_exists(data_ID):
-        pass
-
-    def count_vertices():
-        pass
-
-    def count_edges():
-        pass
-
-    def edge_exists(data_ID1, data_ID2):
-        pass
-
-    def get_outgoing_edges(data_ID):
-        pass
+        for vertex, edges  in self._edges.items():
+            for edge_destination in edges:
+                set.add((vertex, edge_destination))
+        
+        return set_of_edges
     
+    def add_vertex(self, data_ID):
+        if not (self.vertex_exists(data_ID)): # adds data_ID only if key isn't in dictionary
+            self._edges[data_ID] = set()
+            self.num_vertices = self.num_vertices + 1
+
+    def add_edge(self, v1, v2):
+        if v1 not in self._edges:
+            self.add_vertex(v1)
+        if v2 not in self._edges:
+            self.add_vertex(v2)
+        self._edges[v1].add(v2)
+        self.num_edges = self.num_edges + 1
+
+    def vertex_exists(self, data_ID):
+        return self._edges.get(data_ID) is not None
+
+    def count_vertices(self):
+        return self.num_vertices
+
+    def count_edges(self):
+        return self.num_edges
+
+    def edge_exists(self, data_ID1, data_ID2):
+        # ('A', 'B')
+        # check if B is within A's list
+        if data_ID1 not in self._edges:
+            return False
+        return data_ID2 in self._edges[data_ID1]
+
+    def get_outgoing_edges(self, data_ID):
+        # returns the list of edges for the data_ID
+        return self._edges[data_ID]
+
+
