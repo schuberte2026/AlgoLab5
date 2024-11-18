@@ -18,6 +18,12 @@ class Vertex:
 
     def __hash__(self):
         return hash(self.name)
+    
+    def __eq__(self, other):
+        if (isinstance(other, Vertex)):
+            return self.name == other.name
+        else:
+            return self.name == other
 
 def load_data(training_flname, testing_flname):
     """
@@ -149,7 +155,7 @@ class DiGraph:
     
     def add_vertex(self, data_ID):
         if not (self.vertex_exists(data_ID)): # adds data_ID only if key isn't in dictionary
-            self._edges[data_ID.__hash__] = set()
+            self._edges[data_ID] = set()
             self.num_vertices = self.num_vertices + 1
 
     def add_edge(self, v1, v2):
@@ -157,11 +163,11 @@ class DiGraph:
             self.add_vertex(v1)
         if not self.vertex_exists(v2):
             self.add_vertex(v2)
-        self._edges[v1.__hash__].add(Vertex(name = v2))
+        self._edges[v1].add(Vertex(name = v2))
         self.num_edges = self.num_edges + 1
 
     def vertex_exists(self, data_ID):
-        return data_ID.__hash__ in self._edges
+        return data_ID in self._edges
 
     def count_vertices(self):
         return self.num_vertices
@@ -174,10 +180,10 @@ class DiGraph:
         # check if B is within A's list
         if not self.vertex_exists(data_ID1):
             return False
-        return data_ID2 in self._edges[data_ID1.__hash__]
+        return data_ID2 in self._edges[data_ID1]
 
     def get_outgoing_edges(self, data_ID):
         # returns the list of edges for the data_ID
-        return self._edges[data_ID.__hash__]
+        return self._edges[data_ID]
 
 
