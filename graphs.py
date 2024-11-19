@@ -101,8 +101,29 @@ def bfs(G, s):
        items from the front of the queue, and len(q) to check if the queue
        is empty (len(q) == 0).
     """
-    
-        
+    Q = deque()
+    for vertex in G._edges:
+        if not vertex == s:
+            vertex.color = "WHITE"
+            vertex.pi = None
+            vertex.d = sys.maxsize
+    s.color = "GRAY"   
+    s.d = 0
+    s.pi = None
+    Q.append(s)
+
+    num_colored_black = 0
+    while Q:
+        u = Q.popleft()
+        for vertex in G._edges[u]:
+            if vertex.color == "WHITE":
+                vertex.color = "GRAY"
+                vertex.d = u.d + 1
+                vertex.pi = u
+                Q.append(vertex)
+        u.color = "BLACK"
+        num_colored_black += 1
+     
 def recommend_friends_for_user(G, s, max_depth):
     """
     Performs a breadth-first search of the graph G, starting at vertex s.
@@ -116,7 +137,32 @@ def recommend_friends_for_user(G, s, max_depth):
        items from the front of the queue, and len(q) to check if the queue
        is empty (len(q) == 0).
     """
-    pass
+    vertices_encountered = []
+    Q = deque()
+    for vertex in G._edges:
+        if not vertex == s:
+            vertex.color = "WHITE"
+            vertex.pi = None
+            vertex.d = sys.maxsize
+    s.color = "GRAY"   
+    s.d = 0
+    s.pi = None
+    Q.append(s)
+
+    num_colored_black = 0
+    while Q:
+        u = Q.popleft()
+        for vertex in G._edges[u]:
+            if vertex.color == "WHITE":
+                vertex.color = "GRAY"
+                vertex.d = u.d + 1
+                vertex.pi = u
+                if (vertex.d <= max_depth):
+                    Q.append(vertex)
+                    vertices_encountered.append(u)
+        u.color = "BLACK"
+        num_colored_black += 1
+    return vertices_encountered
     
 def recommend_all_friends(G, max_depth):
     """
@@ -125,7 +171,18 @@ def recommend_all_friends(G, max_depth):
     
     The resulting recommendations are stored as a DiGraph.
     """
-    pass
+    friend_graph = DiGraph()
+    for u in G._edges:
+        print(f"u = {u}")
+        targets = recommend_friends_for_user(G, u, max_depth)
+        print(f"Targets = {targets}")
+        for v in targets:
+            if u is not v and not G.edge_exists(v, u):
+                print(f"u = {u.name}, v = {v.name}")
+                friend_graph.add_edge(u, v)
+                friend_graph.add_edge(v, u)
+    print(friend_graph._edges)
+    return friend_graph
 
 
 class DiGraph:
@@ -163,9 +220,15 @@ class DiGraph:
             self.add_vertex(v1)
         if not self.vertex_exists(v2):
             self.add_vertex(v2)
-        self._edges[v1].add(Vertex(name = v2))
+        self._edges[v1].add(self.get_vertex(v2))
         self.num_edges = self.num_edges + 1
 
+    def get_vertex(self, vertex):
+        for v in self._edges.keys():
+            if v == vertex:
+                return v
+        return None
+    
     def vertex_exists(self, data_ID):
         return data_ID in self._edges
 
@@ -180,6 +243,10 @@ class DiGraph:
         # check if B is within A's list
         if not self.vertex_exists(data_ID1):
             return False
+        print(f"Length = 0: {len(self._edges[data_ID1]) == 0}")
+        for edge in self._edges[data_ID1]:
+            print(edge.name)
+        print(f"Data ID 1 name: {data_ID1.name}")
         return data_ID2 in self._edges[data_ID1]
 
     def get_outgoing_edges(self, data_ID):
