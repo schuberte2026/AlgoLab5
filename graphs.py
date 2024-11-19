@@ -159,7 +159,7 @@ def recommend_friends_for_user(G, s, max_depth):
                 vertex.pi = u
                 if (vertex.d <= max_depth):
                     Q.append(vertex)
-                    vertices_encountered.append(u)
+                    vertices_encountered.append(vertex)
         u.color = "BLACK"
         num_colored_black += 1
     return vertices_encountered
@@ -173,15 +173,11 @@ def recommend_all_friends(G, max_depth):
     """
     friend_graph = DiGraph()
     for u in G._edges:
-        print(f"u = {u}")
         targets = recommend_friends_for_user(G, u, max_depth)
-        print(f"Targets = {targets}")
         for v in targets:
-            if u is not v and not G.edge_exists(v, u):
-                print(f"u = {u.name}, v = {v.name}")
+            if u != v and not G.edge_exists(v, u):
                 friend_graph.add_edge(u, v)
                 friend_graph.add_edge(v, u)
-    print(friend_graph._edges)
     return friend_graph
 
 
@@ -243,10 +239,6 @@ class DiGraph:
         # check if B is within A's list
         if not self.vertex_exists(data_ID1):
             return False
-        print(f"Length = 0: {len(self._edges[data_ID1]) == 0}")
-        for edge in self._edges[data_ID1]:
-            print(edge.name)
-        print(f"Data ID 1 name: {data_ID1.name}")
         return data_ID2 in self._edges[data_ID1]
 
     def get_outgoing_edges(self, data_ID):
