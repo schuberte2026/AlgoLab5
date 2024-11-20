@@ -202,7 +202,7 @@ class DiGraph:
 
         for vertex, edges  in self._edges.items():
             for edge_destination in edges:
-                set.add((vertex, edge_destination))
+                set_of_edges.add((vertex, edge_destination))
         
         return set_of_edges
     
