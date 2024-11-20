@@ -201,11 +201,21 @@ class DiGraph:
         return set_of_edges
     
     def add_vertex(self, vertex):
+        """Adds a vertex to the graph if it doesn't already exist.
+        
+            Parameters:
+            vertex (Vertex or String): The vertex to be added to the graph."""
         if not (self.vertex_exists(vertex)): # adds vertex only if key isn't in dictionary
             self._edges[vertex] = set()
             self.num_vertices = self.num_vertices + 1
 
     def add_edge(self, v1, v2):
+        """Adds an edge between the two passed in vertices.
+        
+            Parameters:
+            v1 (Vertex or string): First vertex.
+            v1 (Vertex or string): Second vertex.
+            """
         if not self.vertex_exists(v1):
             self.add_vertex(v1)
         if not self.vertex_exists(v2):
@@ -214,26 +224,62 @@ class DiGraph:
         self.num_edges = self.num_edges + 1
 
     def get_vertex(self, vertex):
+        """Gets a unique vertex from the graph. Corresponding to the one passed in.
+        
+            Paramters:
+            vertex (Vertex or string): The vertex to retrieve.
+
+            Returns:
+            v (Vertex): If the unique vertex is in the graph.
+            Otherwise None if the unique vertex is not in the graph.
+            """
         for v in self._edges.keys():
             if v == vertex:
                 return v
         return None
     
     def vertex_exists(self, vertex):
+        """Determines if a given vertex exists in the graph.
+
+            Parameters:
+            vertex (Vertex): The vertex to check.
+        
+            Returns:
+            (bool): Whether the vertex exists in the graph."""
         return vertex in self._edges
 
     def count_vertices(self):
+        """Counts the number of vertices in the graph.
+        
+            Returns:
+            (int): number of vertices in the graph."""
         return self.num_vertices
 
     def count_edges(self):
+        """Counts the number of edges in the graph.
+        
+            Returns:
+            (int): number of edges in the graph."""
         return self.num_edges
 
     def edge_exists(self, vertex1, vertex2):
+        """Checks if an edge exists in the graph between the vertices passed in.
+        
+            Parameters:
+            vertex1 (Vertex) - first vertex
+            vertex2 (Vertex) - second vertex
+            
+            Returns:
+            (bool): Whether the edge exists in the graph."""
         if not self.vertex_exists(vertex1):
             return False
         return vertex2 in self._edges[vertex1]
 
     def get_outgoing_edges(self, vertex):
+        """
+            Parameters:
+            vertex (Vertex): the source vertex.
+            Returns (list): the list of edges that have a source of the vertex passed in."""
         return self._edges[vertex]
 
 
