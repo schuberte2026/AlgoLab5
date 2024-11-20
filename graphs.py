@@ -112,7 +112,6 @@ def bfs(G, s):
     s.pi = None
     Q.append(s)
 
-    num_colored_black = 0
     while Q:
         u = Q.popleft()
         for vertex in G._edges[u]:
@@ -122,7 +121,6 @@ def bfs(G, s):
                 vertex.pi = u
                 Q.append(vertex)
         u.color = "BLACK"
-        num_colored_black += 1
      
 def recommend_friends_for_user(G, s, max_depth):
     """
@@ -149,7 +147,6 @@ def recommend_friends_for_user(G, s, max_depth):
     s.pi = None
     Q.append(s)
 
-    num_colored_black = 0
     while Q:
         u = Q.popleft()
         for vertex in G._edges[u]:
@@ -161,7 +158,6 @@ def recommend_friends_for_user(G, s, max_depth):
                     Q.append(vertex)
                     vertices_encountered.append(vertex)
         u.color = "BLACK"
-        num_colored_black += 1
     return vertices_encountered
     
 def recommend_all_friends(G, max_depth):
@@ -175,7 +171,7 @@ def recommend_all_friends(G, max_depth):
     for u in G._edges:
         targets = recommend_friends_for_user(G, u, max_depth)
         for v in targets:
-            if u != v and not G.edge_exists(v, u):
+            if not G.edge_exists(v, u):
                 friend_graph.add_edge(u, v)
                 friend_graph.add_edge(v, u)
     return friend_graph
@@ -188,11 +184,9 @@ class DiGraph:
         self.num_vertices = 0
         self.num_edges = 0
 
-
-
     def edge_set(self):
         """Loops through all of the edges, and adds the tuples
-        of the vertices involved in each edge for each to a set.
+        of the vertices involved in each edge for each edge to a set.
         
         Returns:
         Set of tuples of vertices.
@@ -200,15 +194,15 @@ class DiGraph:
         """
         set_of_edges = set()
 
-        for vertex, edges  in self._edges.items():
-            for edge_destination in edges:
+        for vertex, edge_destinations  in self._edges.items():
+            for edge_destination in edge_destinations:
                 set_of_edges.add((vertex, edge_destination))
         
         return set_of_edges
     
-    def add_vertex(self, data_ID):
-        if not (self.vertex_exists(data_ID)): # adds data_ID only if key isn't in dictionary
-            self._edges[data_ID] = set()
+    def add_vertex(self, vertex):
+        if not (self.vertex_exists(vertex)): # adds vertex only if key isn't in dictionary
+            self._edges[vertex] = set()
             self.num_vertices = self.num_vertices + 1
 
     def add_edge(self, v1, v2):
@@ -225,8 +219,8 @@ class DiGraph:
                 return v
         return None
     
-    def vertex_exists(self, data_ID):
-        return data_ID in self._edges
+    def vertex_exists(self, vertex):
+        return vertex in self._edges
 
     def count_vertices(self):
         return self.num_vertices
@@ -234,15 +228,12 @@ class DiGraph:
     def count_edges(self):
         return self.num_edges
 
-    def edge_exists(self, data_ID1, data_ID2):
-        # ('A', 'B')
-        # check if B is within A's list
-        if not self.vertex_exists(data_ID1):
+    def edge_exists(self, vertex1, vertex2):
+        if not self.vertex_exists(vertex1):
             return False
-        return data_ID2 in self._edges[data_ID1]
+        return vertex2 in self._edges[vertex1]
 
-    def get_outgoing_edges(self, data_ID):
-        # returns the list of edges for the data_ID
-        return self._edges[data_ID]
+    def get_outgoing_edges(self, vertex):
+        return self._edges[vertex]
 
 
